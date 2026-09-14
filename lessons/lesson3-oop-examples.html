@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 3: Обектно-ориентиран подход с примери - Algorithma</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; background-color: #f4f4f9; }
+        
+        /* Панели */
+        .panel { flex: 1; padding: 25px; overflow-y: auto; box-sizing: border-box; }
+        .left-panel { border-right: 2px solid #ddd; background-color: #ffffff; }
+        .right-panel { display: flex; flex-direction: column; gap: 20px; background-color: #fdfdfd; }
+        
+        /* Стил за бутона "Назад" */
+        .back-to-home {
+            display: inline-block;
+            text-decoration: none;
+            color: #7f8c8d;
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+        .back-to-home:hover {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            border-color: #bdc3c7;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        h1 { color: #2c3e50; font-size: 1.8rem; margin-bottom: 5px; }
+        h2 { color: #7f8c8d; font-size: 1.1rem; text-transform: uppercase; margin-top: 0; margin-bottom: 20px; }
+        h3 { color: #34495e; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 25px; }
+        p, ul { line-height: 1.6; color: #333; }
+        
+        /* Визуализация - Памет и Конзола */
+        .visualization-area { flex: 1; border: 2px dashed #bdc3c7; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ecf0f1; position: relative; min-height: 320px; padding: 15px; gap: 15px;}
+        
+        .memory-box { display: none; background-color: #fff; border: 2px solid #3498db; border-radius: 10px; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 280px; }
+        .memory-title { font-weight: bold; color: #2980b9; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px; }
+        .memory-prop { display: flex; justify-content: space-between; margin: 4px 0; font-family: Consolas, monospace; font-size: 0.9rem; border-bottom: 1px dashed #eee; padding-bottom: 2px;}
+        .memory-prop span:nth-child(2) { color: #e74c3c; font-weight: bold; }
+
+        .console-box { display: none; background-color: #0c0c0c; border: 2px solid #555; border-top: 20px solid #ccc; border-radius: 5px 5px 0 0; padding: 10px; width: 280px; font-family: Consolas, 'Courier New', monospace; font-size: 13px; position: relative; box-shadow: 0 8px 15px rgba(0,0,0,0.3); }
+        .console-box::before { content: "C:\\...\\ClassAnimal.exe"; position: absolute; top: -18px; left: 10px; color: #333; font-size: 11px; font-family: 'Segoe UI', sans-serif; font-weight: bold; }
+        .console-output { color: #fff; font-weight: bold; white-space: pre-wrap; }
+        
+        .viz-text { text-align: center; font-size: 1.1rem; font-weight: bold; color: #2c3e50; margin-bottom: 5px; min-height: 45px; }
+        
+        /* Зона за код */
+        .code-container { background-color: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; font-family: Consolas, monospace; font-size: 13px; overflow-x: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .code-line { padding: 3px 8px; margin: 1px 0; border-radius: 4px; transition: background-color 0.3s; }
+        .active-line { background-color: #3e4451; border-left: 4px solid #98c379; color: #ffffff; font-weight: bold; }
+        
+        /* Контроли */
+        .controls { display: flex; gap: 15px; justify-content: center; }
+        button { padding: 10px 20px; border: none; border-radius: 5px; background-color: #3498db; color: white; font-size: 15px; cursor: pointer; transition: background-color 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        button:hover { background-color: #2980b9; }
+        button:disabled { background-color: #95a5a6; cursor: not-allowed; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <div class="panel left-panel">
+        <a href="../index.html" class="back-to-home">← Начало</a>
+        
+        <h1>Урок 3: Обектно-ориентиран подход с примери</h1>
+        <h2>Модул 1: ООПП (11. клас)</h2>
+        
+        <p>Група живи организми могат да бъдат разделени в два класа – „Животни“ и „Растения“. Нека се опитаме да изразим мислите си така, че компютърът да е в състояние да разбере какво се опитваме да кажем.</p>
+
+        <h3>Създаване на клас и полета</h3>
+        <p>Класът дава общото описание на даден обект. В тялото на класа се дефинират <strong>полетата</strong> (променливите) и методите, които заедно се наричат <em>членове на класа</em>.</p>
+        <p>Полетата се декларират по същия начин, както обикновените променливи, и описват характеристиките на обекта:</p>
+        <ul>
+            <li><code>string kindOfAnimal;</code> - низов тип за вида на животното</li>
+            <li><code>string color;</code> - низов тип за цвета</li>
+            <li><code>int numberOfLeg;</code> - целочислен тип за броя лапи</li>
+        </ul>
+
+        <h3>Създаване на обекти</h3>
+        <p>Процесът на създаване на обект от клас се нарича <strong>„деклариране на обект“</strong> или създаване на <strong>„инстанция на класа“</strong>. Това се случва в главния метод (<code>Main</code>) чрез ключовата дума <code>new</code>: <br><code>Animal animal = new Animal();</code></p>
+
+        <h3>Присвояване на стойности</h3>
+        <p>Всеки обект може да се разглежда като голяма кутия с наредени в нея по-малки кутии (полета). Два обекта от един и същ клас имат едни и същи полета, но стойностите, съхранени в тях, могат да бъдат различни.</p>
+        <p>За да кажем на компилатора да съхрани информация в дадено поле на конкретен обект, използваме името на обекта, последвано от точка (<code>.</code>) и името на полето.</p>
+    </div>
+
+    <div class="panel right-panel">
+        
+        <div class="visualization-area">
+            <div class="viz-text" id="vizText">Проследете как се създава обект и как се пълнят неговите полета!</div>
+            
+            <div class="memory-box" id="memoryBox">
+                <div class="memory-title">Обект: animal (Клас Animal)</div>
+                <div class="memory-prop">kindOfAnimal <span><span id="valKind">null</span></span></div>
+                <div class="memory-prop">color <span><span id="valColor">null</span></span></div>
+                <div class="memory-prop">numberOfLeg <span><span id="valLeg">0</span></span></div>
+                <div class="memory-prop">hasTail <span><span id="valTail">False</span></span></div>
+            </div>
+
+            <div class="console-box" id="consoleBox">
+                <div class="console-output" id="consoleOutput"></div>
+            </div>
+        </div>
+
+        <div class="code-container">
+            <div class="code-line" id="line-0">class Animal</div>
+            <div class="code-line" id="line-1">{</div>
+            <div class="code-line" id="line-2">&nbsp;&nbsp;&nbsp;&nbsp;public string kindOfAnimal;</div>
+            <div class="code-line" id="line-3">&nbsp;&nbsp;&nbsp;&nbsp;public string color;</div>
+            <div class="code-line" id="line-4">&nbsp;&nbsp;&nbsp;&nbsp;public int numberOfLeg;</div>
+            <div class="code-line" id="line-5">&nbsp;&nbsp;&nbsp;&nbsp;public bool hasTail;</div>
+            <div class="code-line" id="line-6">}</div>
+            <div class="code-line" id="line-7"></div>
+            <div class="code-line" id="line-8">class Program</div>
+            <div class="code-line" id="line-9">{</div>
+            <div class="code-line" id="line-10">&nbsp;&nbsp;&nbsp;&nbsp;public static void Main(string[] args)</div>
+            <div class="code-line" id="line-11">&nbsp;&nbsp;&nbsp;&nbsp;{</div>
+            <div class="code-line" id="line-12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Animal animal = new Animal();</div>
+            <div class="code-line" id="line-13"></div>
+            <div class="code-line" id="line-14">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animal.kindOfAnimal = "Cat";</div>
+            <div class="code-line" id="line-15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animal.color = "Black";</div>
+            <div class="code-line" id="line-16">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animal.numberOfLeg = 4;</div>
+            <div class="code-line" id="line-17">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animal.hasTail = true;</div>
+            <div class="code-line" id="line-18"></div>
+            <div class="code-line" id="line-19">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.WriteLine("Kind of animal: " + animal.kindOfAnimal);</div>
+            <div class="code-line" id="line-20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.WriteLine("Color: " + animal.color);</div>
+            <div class="code-line" id="line-21">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+            <div class="code-line" id="line-22">}</div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="prevStep()" disabled>⏪ Назад</button>
+            <button id="nextBtn" onclick="nextStep()">Напред ⏩</button>
+        </div>
+
+    </div>
+
+    <script>
+        const steps = [
+            { lines: [0,1,2,3,4,5,6], text: "Стъпка 1: Описваме класа Animal с неговите полета. В паметта все още няма нищо създадено.", showMem: false, showCon: false },
+            { lines: [12], text: "Стъпка 2: Инстанциране. Създаваме конкретен обект (голяма кутия). Вътрешните кутии (полета) получават стойности по подразбиране.", showMem: true, vKind: "null", vColor: "null", vLeg: "0", vTail: "False", showCon: false },
+            { lines: [14], text: "Стъпка 3: Чрез оператора точка (.) достъпваме полето kindOfAnimal и му присвояваме стойност.", showMem: true, vKind: "\"Cat\"", vColor: "null", vLeg: "0", vTail: "False", showCon: false },
+            { lines: [15], text: "Стъпка 4: Присвояваме стойност на полето color.", showMem: true, vKind: "\"Cat\"", vColor: "\"Black\"", vLeg: "0", vTail: "False", showCon: false },
+            { lines: [16, 17], text: "Стъпка 5: Присвояваме числови и логически стойности на останалите полета.", showMem: true, vKind: "\"Cat\"", vColor: "\"Black\"", vLeg: "4", vTail: "True", showCon: false },
+            { lines: [19, 20], text: "Стъпка 6: Четем вече запазените стойности от обекта и ги отпечатваме в конзолата.", showMem: true, vKind: "\"Cat\"", vColor: "\"Black\"", vLeg: "4", vTail: "True", showCon: true, conText: "Kind of animal: Cat\nColor: Black" }
+        ];
+
+        let currentStep = -1;
+
+        function updateUI() {
+            // Ресетване
+            document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active-line'));
+            const memBox = document.getElementById('memoryBox');
+            const conBox = document.getElementById('consoleBox');
+            const conOut = document.getElementById('consoleOutput');
+            
+            if (currentStep >= 0) {
+                const step = steps[currentStep];
+                
+                // Осветяване на код
+                step.lines.forEach(lineNum => {
+                    document.getElementById('line-' + lineNum).classList.add('active-line');
+                });
+                
+                // Текст на визуализацията
+                document.getElementById('vizText').innerText = step.text;
+
+                // Обновяване на паметта
+                if (step.showMem) {
+                    memBox.style.display = 'block';
+                    document.getElementById('valKind').innerText = step.vKind;
+                    document.getElementById('valColor').innerText = step.vColor;
+                    document.getElementById('valLeg').innerText = step.vLeg;
+                    document.getElementById('valTail').innerText = step.vTail;
+                } else {
+                    memBox.style.display = 'none';
+                }
+
+                // Обновяване на конзолата
+                if (step.showCon) {
+                    conBox.style.display = 'block';
+                    conOut.innerText = step.conText;
+                } else {
+                    conBox.style.display = 'none';
+                }
+            } else {
+                document.getElementById('vizText').innerText = "Проследете как се създава обект и как се пълнят неговите полета!";
+                memBox.style.display = 'none';
+                conBox.style.display = 'none';
+            }
+
+            // Бутони
+            document.getElementById('prevBtn').disabled = currentStep <= -1;
+            document.getElementById('nextBtn').disabled = currentStep >= steps.length - 1;
+        }
+
+        function nextStep() { if (currentStep < steps.length - 1) { currentStep++; updateUI(); } }
+        function prevStep() { if (currentStep > -1) { currentStep--; updateUI(); } }
+
+        updateUI();
+    </script>
+</body>
+</html>
