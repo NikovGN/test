@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задача 1: Изделия - Algorithma</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; background-color: #f4f4f9; }
+        
+        /* Панели */
+        .panel { flex: 1; padding: 25px; overflow-y: auto; box-sizing: border-box; }
+        .left-panel { border-right: 2px solid #ddd; background-color: #ffffff; }
+        .right-panel { display: flex; flex-direction: column; gap: 20px; background-color: #fdfdfd; }
+        
+        /* Стил за бутона "Назад" */
+        .back-to-home {
+            display: inline-block;
+            text-decoration: none;
+            color: #7f8c8d;
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+        .back-to-home:hover {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            border-color: #bdc3c7;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        h1 { color: #2c3e50; font-size: 1.8rem; margin-bottom: 5px; }
+        h2 { color: #7f8c8d; font-size: 1.1rem; text-transform: uppercase; margin-top: 0; margin-bottom: 20px; }
+        h3 { color: #34495e; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 25px; }
+        p, ul, li { line-height: 1.6; color: #333; }
+        
+        /* Таблици */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px; font-size: 0.95rem; }
+        th, td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; }
+        th { background-color: #ecf0f1; color: #2c3e50; }
+
+        /* Подсказка */
+        .hint-box { background-color: #fff3cd; border-left: 4px solid #ffecb5; padding: 10px 15px; margin-top: 20px; border-radius: 4px; color: #856404; font-family: Consolas, monospace; font-size: 0.9rem; white-space: pre-wrap; }
+        
+        /* Визуализация - Памет и Конзола */
+        .visualization-area { flex: 1; border: 2px dashed #bdc3c7; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ecf0f1; position: relative; min-height: 380px; padding: 15px; gap: 15px;}
+        
+        .memory-container { display: flex; gap: 15px; width: 100%; justify-content: center; }
+        .memory-box { display: none; background-color: #fff; border: 2px solid #3498db; border-radius: 10px; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 220px; }
+        .memory-title { font-weight: bold; color: #2980b9; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-bottom: 10px; }
+        .memory-prop { display: flex; justify-content: space-between; margin: 4px 0; font-family: Consolas, monospace; font-size: 0.85rem; border-bottom: 1px dashed #eee; padding-bottom: 2px;}
+        .memory-prop span:nth-child(2) { color: #e74c3c; font-weight: bold; }
+
+        .console-box { display: none; background-color: #0c0c0c; border: 2px solid #555; border-top: 20px solid #ccc; border-radius: 5px 5px 0 0; padding: 10px; width: 80%; max-width: 400px; font-family: Consolas, 'Courier New', monospace; font-size: 13px; position: relative; box-shadow: 0 8px 15px rgba(0,0,0,0.3); }
+        .console-box::before { content: "C:\\Users\\Milen\\Do.."; position: absolute; top: -18px; left: 10px; color: #333; font-size: 11px; font-family: 'Segoe UI', sans-serif; font-weight: bold; }
+        .console-output { color: #fff; font-weight: bold; white-space: pre-wrap; line-height: 1.4; }
+        
+        .viz-text { text-align: center; font-size: 1.1rem; font-weight: bold; color: #2c3e50; margin-bottom: 5px; min-height: 45px; }
+        
+        /* Зона за код */
+        .code-container { background-color: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; font-family: Consolas, monospace; font-size: 13px; overflow-x: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .code-line { padding: 2px 8px; margin: 1px 0; border-radius: 4px; transition: background-color 0.3s; }
+        .active-line { background-color: #3e4451; border-left: 4px solid #98c379; color: #ffffff; font-weight: bold; }
+        
+        /* Контроли */
+        .controls { display: flex; gap: 15px; justify-content: center; }
+        button { padding: 10px 20px; border: none; border-radius: 5px; background-color: #3498db; color: white; font-size: 15px; cursor: pointer; transition: background-color 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        button:hover { background-color: #2980b9; }
+        button:disabled { background-color: #95a5a6; cursor: not-allowed; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <div class="panel left-panel">
+        <a href="../index.html#interactive-visualizations" class="back-to-home">← Интерактивни визуализации</a>
+        
+        <h1>Задача 1: Изделия</h1>
+        <h2>Тематични задачи</h2>
+        
+        <p>Да се създаде конзолно приложение за описание на изделия. В него да се декларира клас <code>Product</code> (изделие) със следните полета:</p>
+        
+        <table>
+            <tr>
+                <th>Поле</th>
+                <th>Тип</th>
+                <th>Описание</th>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td>низ</td>
+                <td>описание на изделието</td>
+            </tr>
+            <tr>
+                <td>partNum</td>
+                <td>цяло число</td>
+                <td>номер на изделие</td>
+            </tr>
+            <tr>
+                <td>cost</td>
+                <td>реално число</td>
+                <td>цена на изделие</td>
+            </tr>
+        </table>
+
+        <h3>Да се извършат следните действия:</h3>
+        <p>а) Да се създадат две изделия и се инициализират чрез следните данни:</p>
+        
+        <table>
+            <tr>
+                <th>description</th>
+                <th>partNum</th>
+                <th>cost</th>
+            </tr>
+            <tr>
+                <td>screw-driver</td>
+                <td>456</td>
+                <td>5.50</td>
+            </tr>
+            <tr>
+                <td>hammer</td>
+                <td>324</td>
+                <td>8.20</td>
+            </tr>
+        </table>
+
+        <p>б) Да се изведат на екрана компонентите на двете изделия, дефинирани в а), както е показано на долната фигура.</p>
+
+        <div class="hint-box"><strong>Подсказка:</strong>
+namespace izdelia
+{
+    class Product
+    {
+        public string description;
+        // Добавете останалите полета тук
+    }
+
+    class Program
+    {
+        public static void Main(string[] args)
+        {
+            Product p1 = new Product();
+            p1.description = "screw-driver";
+            Console.WriteLine("Description: " + p1.description);
+            Console.WriteLine("PartNum: " + p1.partNum);
+            
+            Console.ReadKey(true);
+        }
+    }
+}</div>
+    </div>
+
+    <div class="panel right-panel">
+        
+        <div class="visualization-area">
+            <div class="viz-text" id="vizText">Проследете създаването на обектите и резултата в конзолата!</div>
+            
+            <div class="memory-container">
+                <div class="memory-box" id="memBox1">
+                    <div class="memory-title">Обект: p1</div>
+                    <div class="memory-prop">description <span><span id="vDesc1">null</span></span></div>
+                    <div class="memory-prop">partNum <span><span id="vPart1">0</span></span></div>
+                    <div class="memory-prop">cost <span><span id="vCost1">0.0</span></span></div>
+                </div>
+
+                <div class="memory-box" id="memBox2">
+                    <div class="memory-title">Обект: p2</div>
+                    <div class="memory-prop">description <span><span id="vDesc2">null</span></span></div>
+                    <div class="memory-prop">partNum <span><span id="vPart2">0</span></span></div>
+                    <div class="memory-prop">cost <span><span id="vCost2">0.0</span></span></div>
+                </div>
+            </div>
+
+            <div class="console-box" id="consoleBox">
+                <div class="console-output" id="consoleOutput"></div>
+            </div>
+        </div>
+
+        <div class="code-container">
+            <div class="code-line" id="line-0">Product p1 = new Product();</div>
+            <div class="code-line" id="line-1">p1.description = "screw-driver";</div>
+            <div class="code-line" id="line-2">p1.partNum = 456;</div>
+            <div class="code-line" id="line-3">p1.cost = 5.50;</div>
+            <div class="code-line" id="line-4"></div>
+            <div class="code-line" id="line-5">Console.WriteLine("Description: " + p1.description);</div>
+            <div class="code-line" id="line-6">Console.WriteLine("PartNum: " + p1.partNum);</div>
+            <div class="code-line" id="line-7">Console.WriteLine("Cost: " + p1.cost);</div>
+            <div class="code-line" id="line-8"></div>
+            <div class="code-line" id="line-9">Product p2 = new Product();</div>
+            <div class="code-line" id="line-10">p2.description = "hammer";</div>
+            <div class="code-line" id="line-11">p2.partNum = 324;</div>
+            <div class="code-line" id="line-12">p2.cost = 8.20;</div>
+            <div class="code-line" id="line-13"></div>
+            <div class="code-line" id="line-14">Console.WriteLine("Description: " + p2.description);</div>
+            <div class="code-line" id="line-15">Console.WriteLine("PartNum: " + p2.partNum);</div>
+            <div class="code-line" id="line-16">Console.WriteLine("Cost: " + p2.cost);</div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="prevStep()" disabled>⏪ Назад</button>
+            <button id="nextBtn" onclick="nextStep()">Напред ⏩</button>
+        </div>
+
+    </div>
+
+    <script>
+        const steps = [
+            { lines: [0,1,2,3], text: "Стъпка 1: Създаваме първото изделие (p1) и му задаваме стойности.", showP1: true, showP2: false, vD1: "\"screw-driver\"", vP1: "456", vC1: "5.50", showCon: false, conText: "" },
+            { lines: [5,6,7], text: "Стъпка 2: Отпечатваме данните за първото изделие в конзолата.", showP1: true, showP2: false, vD1: "\"screw-driver\"", vP1: "456", vC1: "5.50", showCon: true, conText: "Description: screw-driver\nPartNum: 456\nCost: 5,50" },
+            { lines: [9,10,11,12], text: "Стъпка 3: Създаваме второто изделие (p2) и му задаваме стойности.", showP1: true, showP2: true, vD1: "\"screw-driver\"", vP1: "456", vC1: "5.50", vD2: "\"hammer\"", vP2: "324", vC2: "8.20", showCon: true, conText: "Description: screw-driver\nPartNum: 456\nCost: 5,50\n" },
+            { lines: [14,15,16], text: "Стъпка 4: Отпечатваме данните и за второто изделие.", showP1: true, showP2: true, vD1: "\"screw-driver\"", vP1: "456", vC1: "5.50", vD2: "\"hammer\"", vP2: "324", vC2: "8.20", showCon: true, conText: "Description: screw-driver\nPartNum: 456\nCost: 5,50\n\nDescription: hammer\nPartNum: 324\nCost: 8,20" }
+        ];
+
+        let currentStep = -1;
+
+        function updateUI() {
+            document.querySelectorAll('.code-line').forEach(el => el.classList.remove('active-line'));
+            const mem1 = document.getElementById('memBox1');
+            const mem2 = document.getElementById('memBox2');
+            const conBox = document.getElementById('consoleBox');
+            const conOut = document.getElementById('consoleOutput');
+            
+            if (currentStep >= 0) {
+                const step = steps[currentStep];
+                
+                step.lines.forEach(lineNum => {
+                    document.getElementById('line-' + lineNum).classList.add('active-line');
+                });
+                
+                document.getElementById('vizText').innerText = step.text;
+
+                if (step.showP1) {
+                    mem1.style.display = 'block';
+                    document.getElementById('vDesc1').innerText = step.vD1;
+                    document.getElementById('vPart1').innerText = step.vP1;
+                    document.getElementById('vCost1').innerText = step.vC1;
+                } else { mem1.style.display = 'none'; }
+
+                if (step.showP2) {
+                    mem2.style.display = 'block';
+                    document.getElementById('vDesc2').innerText = step.vD2;
+                    document.getElementById('vPart2').innerText = step.vP2;
+                    document.getElementById('vCost2').innerText = step.vC2;
+                } else { mem2.style.display = 'none'; }
+
+                if (step.showCon) {
+                    conBox.style.display = 'block';
+                    conOut.innerText = step.conText;
+                } else { conBox.style.display = 'none'; }
+
+            } else {
+                document.getElementById('vizText').innerText = "Проследете създаването на обектите и резултата в конзолата!";
+                mem1.style.display = 'none';
+                mem2.style.display = 'none';
+                conBox.style.display = 'none';
+            }
+
+            document.getElementById('prevBtn').disabled = currentStep <= -1;
+            document.getElementById('nextBtn').disabled = currentStep >= steps.length - 1;
+        }
+
+        function nextStep() { if (currentStep < steps.length - 1) { currentStep++; updateUI(); } }
+        function prevStep() { if (currentStep > -1) { currentStep--; updateUI(); } }
+
+        updateUI();
+    </script>
+</body>
+</html>
