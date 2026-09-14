@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithma - Модул 1</title>
+    <style>
+        /* Базови стилове */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Главно Меню (Navbar) */
+        .navbar {
+            background: linear-gradient(90deg, #1e272e, #2d3436);
+            color: #fff;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #00cec9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            color: #b2bec3;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a.active {
+            color: #fff;
+            background-color: #0984e3;
+            box-shadow: 0 2px 5px rgba(9, 132, 227, 0.4);
+        }
+
+        /* Основен Контейнер */
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .module-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Акордеон - Теми */
+        .topic-row {
+            margin-bottom: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .topic-main-title {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: #fff;
+            padding: 18px 25px;
+            margin: 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+            font-size: 1.2rem;
+            user-select: none;
+        }
+
+        .topic-main-title:hover {
+            background: linear-gradient(90deg, #2980b9, #2471a3);
+        }
+
+        /* Иконка за разгъване */
+        .topic-main-title::after {
+            content: '▼';
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .topic-main-title.active::after {
+            transform: rotate(180deg);
+        }
+
+        /* Съдържание на темата (Мрежа) */
+        .topic-grid {
+            padding: 25px;
+            gap: 40px;
+            display: none;
+            background-color: #ffffff;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .topic-grid.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Колони */
+        .theory-col,
+        .practice-col {
+            flex: 1;
+        }
+
+        .col-heading {
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        /* Разделители (Сив текст с лява линия) */
+        .sub-section-heading {
+            font-weight: bold;
+            color: #95a5a6;
+            font-size: 0.85rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border-left: 2px solid #bdc3c7;
+            padding-left: 10px;
+        }
+
+        /* Списъци и Линкове */
+        .lessons-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .lessons-list li {
+            margin-bottom: 10px;
+        }
+
+        .lessons-list a {
+            text-decoration: none;
+            color: #34495e;
+            font-weight: 500;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+            border-left: 4px solid #3498db;
+        }
+
+        .lessons-list a:hover {
+            background-color: #e8f4fd;
+            color: #2980b9;
+            transform: translateX(5px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Изчакващ елемент */
+        .pending-item {
+            color: #b2bec3;
+            font-style: italic;
+            padding: 10px 15px;
+        }
+
+        /* Футър */
+        .footer {
+            background-color: #1e272e;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            font-size: 0.95rem;
+            border-top: 3px solid #0984e3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Главно Меню -->
+    <nav class="navbar">
+        <div class="brand">
+            <span class="brand-icon">⚡</span> ALGORITHMA
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Модул 1</a></li>
+            <li><a href="module2.html">Модул 2</a></li>
+            <li><a href="module3.html">Модул 3</a></li>
+            <li><a href="module4.html">Модул 4</a></li>
+        </ul>
+    </nav>
+
+    <!-- Основно Съдържание -->
+    <div class="main-content">
+        <div class="module-container">
+            <h1>Модул 1: ООПП</h1>
+
+            <!-- Раздел 1 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Въведение в обектно-ориентираното програмиране</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson1-oop-intro.html">Урок 1: Обектно-ориентиран подход</a></li>
+                            <li><a href="lessons1/lesson2-console-app.html">Урок 2: Създаване на конзолно приложение</a>
+                            </li>
+                            <li><a href="lessons1/lesson3-oop-examples.html">Урок 3: Обектно-ориентиран подход с
+                                    примери</a></li>
+                        </ul>
+                        <div class="sub-section-heading">КИРИЛИЗИРАН ВХОД И ИЗХОД ОТ КОНЗОЛАТА</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/bonus-cyrillic.html">Бонус урок: Кирилизация в конзолата</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-products.html">Задача 1: Изделия</a></li>
+                            <li><a href="tasks1/task2-rectangle.html">Задача 2: Правоъгълник</a></li>
+                            <li><a href="tasks1/task3-bank-account.html">Задача 3: Банкова сметка</a></li>
+                            <li><a href="tasks1/task4-destinations.html">Задача 4: Дестинации</a></li>
+                            <li><a href="tasks1/task5-planets.html">Задача 5: Планети</a></li>
+                            <li><a href="tasks1/task6-triangle-area.html">Задача 6: Лице на триъгълник</a></li>
+                            <li><a href="tasks1/task7-matchbox.html">Задача 7: Кибритена кутия</a></li>
+                        </ul>
+                        <div class="sub-section-heading">ВИЗУАЛИЗАЦИИ</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/demo-task1-products.html">Демо: Задача 1 (Изделия)</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 2 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Методи в класовете</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson4-methods.html">Урок 4: Добавяне на методи към класове</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/t2-task1-distance.html">Задача 1: Разстояние между две точки</a></li>
+                            <li><a href="tasks1/t2-task2-salary.html">Задача 2: Заплата на служител</a></li>
+                            <li><a href="tasks1/t2-task3-function.html">Задача 3: Функция f(x)</a></li>
+                            <li><a href="tasks1/t2-task4-parallelepiped.html">Задача 4: Правоъгълен паралелепипед</a>
+                            </li>
+                            <li><a href="tasks1/t2-task5-divisors.html">Задача 5: Делители X и Y</a></li>
+                            <li><a href="tasks1/t2-task6-nigonia.html">Задача 6: Разделянето на Нигония</a></li>
+                            <li><a href="tasks1/t2-task7-survivor.html">Задача 7: Последният оцелял</a></li>
+                            <li><a href="tasks1/t2-task8-articles.html">Задача 8: Интернет статии</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 3 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Конструктори</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson5-constructors.html">Урок 5: Добавяне на конструктори към
+                                    класове</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-rating-constructors.html">Задача 1: Оценяване на задачи</a></li>
+                            <li><a href="tasks1/task2-time-interval.html">Задача 2: Интервал от време</a></li>
+                            <li><a href="tasks1/task3-expenses-income.html">Задача 3: Разходи и приходи</a></li>
+                            <li><a href="tasks1/task4-bus-ticket.html">Задача 4: Автобусен билет</a></li>
+                            <li><a href="tasks1/task5-mult-constructor.html">Задача 5: Кратно на първото?</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 4 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Модификатори на достъпа. Свойства на клас</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson6-access-modifiers.html">Урок 6: Модификатори на достъпа</a>
+                            </li>
+                            <li><a href="lessons1/lesson7-properties.html">Урок 7: Свойства (Properties) на клас</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-date2022.html">Задача 1: Дата от 2022 година</a></li>
+                            <li><a href="tasks1/task2-repairs.html">Задача 2: Ремонти</a></li>
+                            <li><a href="tasks1/task3-circle2d.html">Задача 3: Окръжности в равнината</a></li>
+                            <li><a href="tasks1/task4-cocacola.html">Задача 4: Поръчки на Кока Кола</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 5 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Работа с дата и време</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson8-datetime.html">Урок 8: Работа с дата и време</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-medicaments.html">Задача 1: Годност на лекарства</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 6 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Проект</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Указания</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/project-guidelines.html">Задание за самостоятелен проект</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Примерни теми</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/project1-voting.html">Проект 1: Машина за гласуване</a></li>
+                            <li><a href="tasks1/project2-services.html">Проект 2: Електронни услуги</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 7 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Конзолен вход и изход</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson9-console-io.html">Урок 9: Конзолен вход и изход</a></li>
+                            <li><a href="lessons1/lesson10-composite-formatting.html">Урок 10: Система за съставно
+                                    форматиране</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-hotel-io.html">Задача 1: Регистрация в хотел (IO)</a></li>
+                            <li><a href="tasks1/task2-beer-orders.html">Задача 2: Поръчки за бира</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 8 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Оператор switch</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson11-switch.html">Урок 11: Оператор за многовариантен избор</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-areas-switch.html">Задача 1: Лица</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 9 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Цикли</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson12-for-loop.html">Урок 12: Оператор за повторения for</a></li>
+                            <li><a href="lessons1/lesson13-while-loop.html">Урок 13: Оператор за повторения while</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/tasks1-for-loop-training.html">Поредица от задачи: Цикъл for</a></li>
+                            <li><a href="tasks1/task2-sundays.html">Задача: Неделите през една година</a></li>
+                            <li><a href="tasks1/tasks1-while-loop-training.html">Поредица от задачи: Цикъл while</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 10 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Символи</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson14-characters.html">Урок 14: Знаков тип данни (char)</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-char-counters.html">Задача 1: Броячи на знаци</a></li>
+                            <li><a href="tasks1/task2-words-counter.html">Задача 2: Думи</a></li>
+                            <li><a href="tasks1/task3-password-strength.html">Задача 3: Сила на парола</a></li>
+                            <li><a href="tasks1/task3-egn-info.html">Задача 4: Справка за ЕГН</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 11 -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Едномерен масив</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson15-arrays.html">Урок 15: Структура от данни масив</a></li>
+                            <li><a href="lessons1/lesson16-array-of-objects.html">Урок 16: Масив от обекти в C#</a></li>
+                            <li><a href="lessons1/lesson17-foreach-loop.html">Урок 17: Оператор за повторения
+                                    foreach</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-generate-and-print.html">Задача 1: Създаване и отпечатване</a>
+                            </li>
+                            <li><a href="tasks1/task2-min-max-num.html">Задача 2: Най-малко и най-голямо число</a></li>
+                            <li><a href="tasks1/task3-sequence.html">Задача 3: Редица</a></li>
+                            <li><a href="tasks1/task4-first-smaller.html">Задача 4: Първото по-малко число</a></li>
+                            <li><a href="tasks1/task7-contest-scores.html">Задача 5: Над средното равнище</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 12: Списъци -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Списъци</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson18-lists.html">Урок 18: Колекция от данни списък
+                                    (List&lt;T&gt;)</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-pet-names.html">Задача 1: Имена на домашен любимец</a></li>
+                            <li><a href="tasks1/task2-car-reg-numbers.html">Задача 2: Наказание с регистрационни
+                                    номера</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 13: Статични методи и полета -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Статични методи и полета</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson19-static-methods.html">Урок 19: Въведение в статични методи</a>
+                            </li>
+                            <li><a href="lessons1/lesson20-static-fields.html">Урок 20: Статични полета на клас</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-math-points.html">Задача 1: Изчисления с точки в равнината</a>
+                            </li>
+                            <li><a href="tasks1/task2-geography-system.html">Задача 2: Географска информационна
+                                    система</a></li>
+                            <li><a href="tasks1/task3-serial-number.html">Задача 3: Сериен номер на изделие</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 14: Самостоятелна работа -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Самостоятелна работа</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Указания</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/independent-work-guidelines.html">Как да решаваме задачите</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Задачи</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-gap-check.html">Задача 1: "Дупка" в числова редица</a></li>
+                            <li><a href="tasks1/task2-text-tools.html">Задача 2: Инструменти за работа с текст</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 15: Предефиниране на методи -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Предефиниране на методи</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson21-method-overloading.html">Урок 21: Предефиниране на методи</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-char-separated.html">Задача 1: Символни разделители</a></li>
+                            <li><a href="tasks1/task2-pseudo-graphics.html">Задача 2: Графика в конзолата</a></li>
+                            <li><a href="tasks1/task3-caesars-cipher.html">Задача 3: Код на Цезар</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 16: Връзки между класовете -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Връзки между класовете</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson22-class-relations.html">Урок 22: Връзки между класовете. Обекти
+                                    като полета</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-association-friends.html">Задача 1: Приятели (Асоциация)</a></li>
+                            <li><a href="tasks1/task2-composition-folder.html">Задача 2: Папка и файлове
+                                    (Композиция)</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 17: Наследяване -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Наследяване</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson23-inheritance-basics.html">Урок 23: Наследяване на класове</a>
+                            </li>
+                            <li><a href="lessons1/lesson24-inheritance-constructors.html">Урок 24: Наследяване и
+                                    конструктори</a></li>
+                            <li><a href="lessons1/lesson25-method-overriding.html">Урок 25: Предефиниране на методи
+                                    (override)</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-employee-data.html">Задача 1: Данни за служител</a></li>
+                            <li><a href="tasks1/task2-airplanes-inheritance.html">Задача 2: Самолети</a></li>
+                            <li><a href="tasks1/task3-1-students-meetings.html">Задача 3: Ученически събрания</a></li>
+                            <li><a href="tasks1/task4-tourist-clock.html">Задача 4: Туристически часовник</a></li>
+                            <li><a href="tasks1/task3-role-in-school.html">Задача 5: Роля в училище</a></li>
+                            <li><a href="tasks1/task4-furniture.html">Задача 6: Мебели</a></li>
+                            <li><a href="tasks1/task5-smart-atm.html">Задача 7: Интелигентен банкомат</a></li>
+                            <li><a href="tasks1/task6-1-heater.html">Задача 8: Отопление</a></li>
+                            <li><a href="tasks1/task3-hotel.html">Задача 9: Хотел</a></li>
+                            <li><a href="tasks1/task4-excursions.html">Задача 10: Екскурзии</a></li>
+                            <li><a href="tasks1/task5-aquapark.html">Задача 11: Аквапарк</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 18: Полиморфизъм -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Полиморфизъм</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson26-polymorphism.html">Урок 26: Полиморфизъм</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-shapes.html">Задача 1: Фигури</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 19: Абстрактни класове и методи -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Абстрактни класове и методи</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                            <li><a href="lessons1/lesson27-abstract-classes.html">Урок 27: Абстрактни класове и методи</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-import-cars.html">Задача 1: Внос на нови автомобили</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Раздел 19: Интерфейси -->
+            <div class="topic-row">
+                <h3 class="topic-main-title">Интерфейси</h3>
+                <div class="topic-grid">
+                    <div class="theory-col">
+                        <div class="col-heading">Теория</div>
+                        <ul class="lessons-list">
+                           <li><a href="lessons1/lesson28-interfaces.html">Урок 28: Интерфейси</a></li>
+                        </ul>
+                    </div>
+                    <div class="practice-col">
+                        <div class="col-heading">Практика</div>
+                        <ul class="lessons-list">
+                            <li><a href="tasks1/task1-data-transfer.html">Задача 1: Пренос на данни</a></li>
+                            <li><a href="tasks1/task2-rental-cars.html">Задача 2: Автомобили Опел под наем</a></li>
+                            <li><a href="tasks1/task3-cinema.html">Задача 3: Киносалон</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футър -->
+    <footer class="footer">
+        <div>&copy; 2026 Algorithma. Всички права запазени.</div>
+    </footer>
+
+    <!-- Скрипт за Акордеона -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const headers = document.querySelectorAll(".topic-main-title");
+
+            headers.forEach(header => {
+                header.addEventListener("click", function () {
+                    // Превключваме завъртането на стрелката
+                    this.classList.toggle("active");
+
+                    // Намираме следващия елемент (grid-а с уроците) и го показваме/скриваме
+                    const grid = this.nextElementSibling;
+                    grid.classList.toggle("active");
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
